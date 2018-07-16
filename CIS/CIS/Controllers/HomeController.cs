@@ -26,5 +26,11 @@ namespace CIS.Controllers
 
             return View();
         }
+        public ActionResult CrimeReport()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
     }
 }
