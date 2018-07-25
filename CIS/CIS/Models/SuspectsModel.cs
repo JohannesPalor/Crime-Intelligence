@@ -51,6 +51,7 @@ namespace CIS.Models
 
         [MaxLength(50)]
         [Display(Name = "Other Description")]
+        [DataType(DataType.MultilineText)]
         public string Other_Description{ get; set; }
 
 

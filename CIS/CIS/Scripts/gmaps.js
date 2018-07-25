@@ -157,3 +157,6 @@ function hide() {
     $("#mapOptions").fadeOut();
     marker.setMap(null);
 }
+
+
+
