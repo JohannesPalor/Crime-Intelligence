@@ -136,8 +136,8 @@ function initMap() {
 
 
             marker = new google.maps.Marker({
-                position: event.latLng,
-                map: map
+            position: event.latLng,
+            map: map
 
             });
         }
