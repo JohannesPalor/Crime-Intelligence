@@ -1,4 +1,4 @@
-﻿@model CIS.Models.ReportsModel
+﻿@model IEnumerable<CIS.Models.ReportsModel>
 
 
 @{
@@ -41,59 +41,209 @@
 
 
 
-<div class="modal fade" id="modalReport" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="exampleModalLabel">Report a Crime Incident</h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            @using (Html.BeginForm())
-            {
-                <div class="modal-body">
 
 
-                    @Html.AntiForgeryToken()
-
-                    <div class="form-horizontal">
-                        <h4>ReportsModel</h4>
-                        <hr />
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.incident_details, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.incident_details, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.incident_details, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-
-
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Next</button>
-                </div>
-            }
-        </div>
-    </div>
-</div>
-    
 
 @section Scripts
 {
+
+
+
+
+
     @Scripts.Render("~/bundles/jqueryval")
-    <script src="@Url.Content("~/Scripts/gmaps.js")"></script>
+
+    <script type="text/javascript">
+
+
+        var map;
+        var marker;
+        var active = 0;
+
+
+        function initMap() {
+
+
+            //Setting up Map
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 14.599512, lng: 120.984222 },
+                zoom: 14,
+                styles: [
+                    { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+                    { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+                    { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+                    {
+                        featureType: 'administrative.locality',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#d59563' }]
+                    },
+                    {
+                        featureType: 'poi',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#d59563' }]
+                    },
+                    {
+                        featureType: 'poi.park',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#263c3f' }]
+                    },
+                    {
+                        featureType: 'poi.park',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#6b9a76' }]
+                    },
+                    {
+                        featureType: 'road',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#38414e' }]
+                    },
+                    {
+                        featureType: 'road',
+                        elementType: 'geometry.stroke',
+                        stylers: [{ color: '#212a37' }]
+                    },
+                    {
+                        featureType: 'road',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#9ca5b3' }]
+                    },
+                    {
+                        featureType: 'road.highway',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#746855' }]
+                    },
+                    {
+                        featureType: 'road.highway',
+                        elementType: 'geometry.stroke',
+                        stylers: [{ color: '#1f2835' }]
+                    },
+                    {
+                        featureType: 'road.highway',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#f3d19c' }]
+                    },
+                    {
+                        featureType: 'transit',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#2f3948' }]
+                    },
+                    {
+                        featureType: 'transit.station',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#d59563' }]
+                    },
+                    {
+                        featureType: 'water',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#17263c' }]
+                    },
+                    {
+                        featureType: 'water',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#515c6d' }]
+                    },
+                    {
+                        featureType: 'water',
+                        elementType: 'labels.text.stroke',
+                        stylers: [{ color: '#17263c' }]
+                    },
+                    {
+                        featureType: "transit",
+                        elementType: "all",
+                        stylers: [
+                            { visibility: "off" }
+                        ]
+                    },
+                    {
+                        featureType: "administrative",
+                        elementType: "labels.icon",
+                        stylers: [
+                            { visibility: "off" }
+                        ]
+                    },
+                    {
+                        featureType: "road",
+                        elementType: "labels",
+                        stylers: [
+                            { visibility: "off" }
+                        ]
+                    }
+                ]
+            });
+
+            var myLatLng = [];
+
+         
+            
+            var viewBag = @Html.Raw(Json.Encode(ViewBag.LatLongArray));
+            for (var j = 0; j < viewBag.length; j++) {
+              
+                myLatLng.push(['', viewBag[j].latitude, viewBag[j].longitude,0]);
+            }
+            for (ctr = 0; ctr < viewBag.length; ctr++) {
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(myLatLng[ctr][1], myLatLng[ctr][2]),
+                    map: map
+
+                });
+
+            }
+
+
+            //Setting map options
+            map.setOptions({ draggable: true });
+            infoWindow = new google.maps.InfoWindow;
+
+
+            //Adding Listener
+            google.maps.event.addListener(map, 'rightclick', function (event) {
+
+                alert(event.latLng);
+
+                if (active == 0) {
+                    $("#mapOptions").css({
+                        'top': event.pixel.y - 60,
+                        'left': event.pixel.x + 30
+                    });
+                    $("#mapOptions").fadeIn();
+                    active++;
+
+
+
+
+
+                    marker = new google.maps.Marker({
+                        position: event.latLng,
+                        map: map
+
+                    });
+                }
+
+
+
+            });
+
+
+        }
+
+
+        $("#mapOptions").hide();
+
+        function hide() {
+            active--;
+            $("#mapOptions").fadeOut();
+            marker.setMap(null);
+        }
+
+
+
+
+    </script>
+    <!--<script src="@Url.Content("~/Scripts/gmaps.js")"></script>-->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDx_kiLyXQBUWuVFMB5iLI-aE3PnhimYFw&callback=initMap" async defer></script>
 
 
 
 
 
-}
+    }

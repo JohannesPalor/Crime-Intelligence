@@ -123,6 +123,8 @@ function initMap() {
     //Adding Listener
     google.maps.event.addListener(map, 'rightclick', function (event) {
 
+        alert(event.latLng);
+
         if (active == 0) {
             $("#mapOptions").css({
                 'top': event.pixel.y - 60,

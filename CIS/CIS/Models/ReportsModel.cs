@@ -18,10 +18,10 @@ namespace CIS.Models
         public DateTime time { get; set; }
 
         [Required]
-        public decimal longitude { get; set; }
+        public string longitude { get; set; }
 
         [Required]
-        public decimal latitude { get; set; }
+        public string latitude { get; set; }
 
         [Required]
         public bool is_verified { get; set; }
