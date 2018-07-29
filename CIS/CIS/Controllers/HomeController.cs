@@ -27,6 +27,13 @@ namespace CIS.Controllers
             return View();
         }
 
+        public ActionResult Reports()
+        {
+            ViewBag.Message = "Your application description page.";
+
+            return View();
+        }
+
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
@@ -72,5 +79,8 @@ namespace CIS.Controllers
             return list;
 
         }
+
     }
+
+
 }
