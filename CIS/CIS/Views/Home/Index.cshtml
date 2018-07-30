@@ -172,10 +172,11 @@
             });
 
             var myLatLng = [];
-
-         
+            
             
             var viewBag = @Html.Raw(Json.Encode(ViewBag.LatLongArray));
+
+
             for (var j = 0; j < viewBag.length; j++) {
               
                 myLatLng.push(['', viewBag[j].latitude, viewBag[j].longitude,0]);

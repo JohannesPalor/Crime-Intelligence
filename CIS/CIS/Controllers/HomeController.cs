@@ -17,7 +17,8 @@ namespace CIS.Controllers
         public ActionResult Index()
         {
             ViewBag.LatLongArray =getCrimeReports() ;
-            return View(getCrimeReports());
+
+            return View();
         }
 
         public ActionResult About()
