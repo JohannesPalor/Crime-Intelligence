@@ -53,7 +53,5 @@ namespace CIS.Models
         [Display(Name = "Other Description")]
         [DataType(DataType.MultilineText)]
         public string Other_Description{ get; set; }
-
-
     }
 }

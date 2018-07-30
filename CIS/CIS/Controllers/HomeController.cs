@@ -16,47 +16,44 @@ namespace CIS.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.LatLongArray =getCrimeReports() ;
 
-            return View();
+        
+
+            ViewBag.LatLongArray =GetCrimeReport() ;
+            return View(GetCrimeReport());
+
         }
 
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
         public ActionResult Reports()
         {
             ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-
             return View();
         }
         public ActionResult CrimeReport()
         {
             ViewBag.Message = "Your contact page.";
-
             return View();
         }
 
-        public List<ReportsModel> getCrimeReports()
+        public List<ReportsModel> GetCrimeReport()
         {
-            
-
             var list = new List<ReportsModel>();
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @"SELECT Crime_ID,longitude, latitude, incident_details, crime_rating,[Time]  FROM Crime_Reports";
+                string query = @"SELECT Crime_ID,longitude, latitude, incident_details, crime_rating, [Time] FROM Crime_Reports";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     using (SqlDataReader sdr = cmd.ExecuteReader())
@@ -70,7 +67,6 @@ namespace CIS.Controllers
                                 latitude = sdr["latitude"].ToString(),
                                 incident_details = sdr["incident_details"].ToString(),
                                 crime_rating = int.Parse(sdr["crime_rating"].ToString())
-
                             });
                         }
                         
@@ -78,7 +74,6 @@ namespace CIS.Controllers
                 }
             }
             return list;
-
         }
 
     }
