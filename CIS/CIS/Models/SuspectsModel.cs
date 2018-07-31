@@ -18,13 +18,15 @@ namespace CIS.Models
         [MaxLength(50)]
         public string Name { get; set; }
 
-        [MaxLength(50)]
-        [Display(Name="Face Shape")]
-        public string Face_Shape { get; set; }
+       
+        public int Face_Shape { get; set; }
 
-        [MaxLength(50)]
+
         [Display(Name = "Hair Style")]
-        public string Hair_Style { get; set; }
+        [Required(ErrorMessage = "Required field")]
+        public int Hair_Style { get; set; }
+
+        public List<HairTypeViewModel> HairTypes { get; set; }
 
         [MaxLength(50)]
         [Display(Name = "Prominent Facial Feature")]
