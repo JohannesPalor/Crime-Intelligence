@@ -75,31 +75,5 @@ namespace CIS.Controllers
             }
             return list;
         }
-
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        public ActionResult Create(ReportsModel record)
-        {
-            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
-            {
-                con.Open();
-                string query = @"INSERT INTO crime_reports VALUES (@CrimeID, @longitude, @latitude, @incident_details, @crime_rating)";
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("CrimeID", record.CrimeId);
-                    cmd.Parameters.AddWithValue("longitude", record.longitude);
-                    cmd.Parameters.AddWithValue("latitude", record.latitude);
-                    cmd.Parameters.AddWithValue("incident_details", record.incident_details);
-                    cmd.Parameters.AddWithValue("crime_rating", record.crime_rating);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            return View();
-        }
     }
-
-
 }
