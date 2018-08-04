@@ -6,6 +6,12 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+
+
 
 
     <style>
@@ -17,27 +23,24 @@
             margin-top: 50px;
         }
 
+
         .transparent {
-            background: rgba(29, 45, 71, .85);
+            background: rgba(29, 45, 71, .9);
         }
 
-       
+
 
         .white {
             color: white;
         }
 
-        img{
-            object-fit:fill;
+        img {
+            object-fit: fill;
         }
 
-        .flex{
-            display:flex;
+        .flex {
+            display: flex;
         }
-
-      
-
-
     </style>
 
 </head>
@@ -55,8 +58,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Analytics", "About", "Home")</li>
-                    <li>@Html.ActionLink("Report Generation", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Analytics", "Analytics", "Reports")</li>
+                    <!-- <li>@Html.ActionLink("Report Generation", "Contact", "Home")</li>-->
                 </ul>
             </div>
         </div>

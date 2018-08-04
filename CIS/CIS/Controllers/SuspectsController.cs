@@ -47,16 +47,44 @@ namespace CIS.Controllers
         }
 
 
-        public ActionResult Suspects()
+        public List<WeaponTypesModel> GetWeaponType()
+        {
+            var list = new List<WeaponTypesModel>(); // instantiation
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"SELECT WeaponId, WeaponName
+                    FROM Weapons ORDER BY WeaponId";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    using (SqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+                            list.Add(new WeaponTypesModel
+                            {
+                                WeaponId = int.Parse(sdr["WeaponId"].ToString()),
+                                WeaponName = sdr["WeaponName"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+        public ActionResult Suspects(int ID)
         {
 
             var record = new SuspectsModel();
+            record.crime_id = ID;
             record.HairTypes = GetHairType();
+            record.WeaponTypes = GetWeaponType();
             return View(record);
         }
 
         [HttpPost]
-        public ActionResult Suspects(SuspectsModel record)
+        public ActionResult Suspects(SuspectsModel record, HttpPostedFileBase image)
         {
            
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
@@ -65,17 +93,23 @@ namespace CIS.Controllers
                 string query = @"INSERT INTO SUSPECTS VALUES(@Crime_id,@Name,@Face_Shape,
                                @Hair_Style,@Prominent_Facial_Feature,@Body_Built,
                                @Shirt_Color,@Tattoo_Location,@Is_Armed,
-                               @Type_of_Weapon,@Other_Description)";
+                               @Type_of_Weapon,@Other_Description,@Image)";
 
                 using (SqlCommand com = new SqlCommand(query, con))
                 {
-                    com.Parameters.AddWithValue("@Crime_id", 1);
+                    com.Parameters.AddWithValue("@Crime_id", record.crime_id);
                     com.Parameters.AddWithValue("@Name", record.Name);
                     com.Parameters.AddWithValue("@Face_Shape", record.Face_Shape);
                     com.Parameters.AddWithValue("@Hair_Style", record.Hair_Style);
                     com.Parameters.AddWithValue("@Prominent_Facial_Feature", record.Prominent_Facial_Feature);
                     com.Parameters.AddWithValue("@Body_Built", record.Body_Built);
-
+                    com.Parameters.AddWithValue("@Image", image == null ? "None" :
+                       DateTime.Now.ToString("yyyyMMddHHmmss-") + image.FileName);
+                    if (image != null)
+                    {
+                        image.SaveAs(Server.MapPath("~/Images/SuspectImages/" +
+                    DateTime.Now.ToString("yyyyMMddHHmmss-") + image.FileName));
+                    }
                     com.Parameters.AddWithValue("@Shirt_Color", record.Shirt_Color );
                     com.Parameters.AddWithValue("@Tattoo_Location", record.Tattoo_Location);
                     com.Parameters.AddWithValue("@Is_Armed", 0);
@@ -87,7 +121,7 @@ namespace CIS.Controllers
                 }
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Home");
         }
     }
 }

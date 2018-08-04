@@ -1,0 +1,123 @@
+﻿@model CIS.Models.ReportsModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+
+<link href="/Content/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<h2>Crime Report</h2>
+
+<div class="row">
+    @foreach (var item in Model.ReportsList)
+    {
+        <div class="col-lg-4">
+            <img src="~/Images/CrimeImages/@item.Image" width="600" class="img-thumbnail mx-auto  img-responsive"/>
+        </div>
+        <div class="col-lg-8">
+            <h3>Crime ID: @item.CrimeId</h3>
+            <h3>Crime Type: @item.CrimeName</h3>
+            <h3>Details: @item.incident_details</h3>
+        </div>
+    }
+</div>
+
+<br />
+<hr/>
+
+<h2>Suspect List</h2>
+
+<div>
+
+    <hr />
+
+    <table class="table" id="table">
+        <thead>
+            <tr>
+                <th>
+                    Suspect Name
+                </th>
+                <th>
+                    Face Shape
+                </th>
+                <th>
+                    Body Built
+                </th>
+
+                <th>
+                    Shirt Color
+                </th>
+                <th>
+                    Hair Style
+                </th>
+                <th>
+                    Weapon
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SuspectsList)
+            {
+                <tr>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Face_Shape)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Body_Built)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Shirt_Color)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Hair_Style)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Weapon)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Other_Description)
+                    </td>
+
+
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.suspect_id }) | 
+                        @Html.ActionLink("Delete", "Delete", new { id = item.suspect_id }) 
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.CrimeId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+<!--Data Tables-->
+@section Scripts{
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                "iDisplayLength": 5,
+                "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]]
+            });
+        });
+    </script>
+}

@@ -11,7 +11,7 @@ namespace CIS.Models
 
         [Key]        
         public int suspect_id { get; set; }
-
+        public string Image { get; set; }
         public int crime_id { get; set; }
 
         [Required]
@@ -19,14 +19,16 @@ namespace CIS.Models
         public string Name { get; set; }
 
        
-        public int Face_Shape { get; set; }
+        public string Face_Shape { get; set; }
 
 
         [Display(Name = "Hair Style")]
         [Required(ErrorMessage = "Required field")]
-        public int Hair_Style { get; set; }
+        public string Hair_Style { get; set; }
 
         public List<HairTypeViewModel> HairTypes { get; set; }
+
+
 
         [MaxLength(50)]
         [Display(Name = "Prominent Facial Feature")]
@@ -49,7 +51,12 @@ namespace CIS.Models
 
         [MaxLength(50)]
         [Display(Name = "Type of Weapon")]
-        public string Type_of_Weapon { get; set; }
+        public int Type_of_Weapon { get; set; }
+
+       
+        public string Weapon { get; set; }
+
+        public List<WeaponTypesModel> WeaponTypes { get; set; }
 
         [MaxLength(50)]
         [Display(Name = "Other Description")]

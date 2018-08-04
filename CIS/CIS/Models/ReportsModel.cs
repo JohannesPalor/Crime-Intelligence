@@ -12,11 +12,21 @@ namespace CIS.Models
         [Key]
         [Required]
         public int CrimeId { get; set; }
+        public string Image { get; set; }
+
 
         [Required]
         [DataType(DataType.DateTime)]
+        [Display(Name ="Date of Incident")]
         public DateTime time { get; set; }
 
+        public List<CrimeTypesModel> CrimeTypes{ get; set; }
+
+        [Display(Name = "Crime Type")]
+        public int CrimeTypeId { get; set; }
+
+        public string CrimeName { get; set; }
+        public int SuspectCount { get; set; }
         [Required]
         public string longitude { get; set; }
 
@@ -37,5 +47,8 @@ namespace CIS.Models
 
         [Required]
         public int user_id { get; set; }
+
+        public List<ReportsModel> ReportsList { get; set; }
+        public List<SuspectsModel> SuspectsList { get; set; }
     }
 }

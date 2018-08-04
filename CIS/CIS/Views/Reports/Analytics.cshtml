@@ -1,0 +1,226 @@
+﻿@model IEnumerable<CIS.Models.ReportsModel>
+
+@{
+    ViewBag.Title = "Analytics";
+}
+<link href="/Content/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+<h2>Analytics</h2>
+
+<div class="row" id="lightColor">
+    <div class="col-lg-12">
+        <div id="chart_div" style="width: 100%; height: 350px;"></div>
+    </div>
+    <div class="col-lg-12"><br /><hr /><br /><br /></div>
+    <div class="col-lg-6">
+        <div id="donutchart" style="width: 900px; height: 500px;" class="col-lg-12"></div>
+
+    </div>
+
+
+    <div class="col-lg-5">
+
+        <table id="tblUsers" class="table">
+
+            <thead>
+            <th>
+                Crime ID
+            </th>
+            <th>
+                Crime Type
+            </th>
+            <th>
+                Details
+            </th>
+            <th>
+                Suspects
+            </th>
+
+            <th>Actions</th>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CrimeId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CrimeName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.incident_details)
+                        </td>
+                        <td>
+                            0
+                        </td>
+
+                        <td>
+                            <a class="btn btn-info btn-xs" href="@Url.Action("Details", "Reports", new { id = item.CrimeId })">
+                                <i class="fa fa-edit">View Details</i>
+                            </a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+
+
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        google.charts.load("current", { packages: ["corechart"] });
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+
+            var TheftCount = @Html.Raw(Json.Encode(ViewBag.TheftCount));
+            var DrinkingCount = @Html.Raw(Json.Encode(ViewBag.DrinkingCount));
+            var SexualHarassmentCount = @Html.Raw(Json.Encode(ViewBag.SexualHarassmentCount));
+            var BrawlCount = @Html.Raw(Json.Encode(ViewBag.BrawlCount));
+
+
+
+            var data = google.visualization.arrayToDataTable([
+
+                ["Crime Type", "Count", "ID"],
+                ['Theft/Robbery', TheftCount,1],
+                ['Sexual Harassment', SexualHarassmentCount,2],
+                ['Brawl', BrawlCount,3],
+                ['Drinking in Public', DrinkingCount,4]
+            ]);
+
+            var options = {
+                title: 'Number of Crimes',
+                pieHole: 0.35,
+                backgroundColor: { fill: 'transparent' }
+            };
+
+            var  chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+
+            function selectHandler() {
+                var selectedItem = chart.getSelection()[0];
+                if (selectedItem) {
+                    var topping = data.getValue(selectedItem.row, 2);
+                    //Return topping to Controller. Topping is ID of selected row.
+                   
+
+                    if (topping == 1) {
+                      
+                       
+                      window.location = '@Url.Action("Analytics/1", "Reports" )';
+                    }
+                    if (topping == 2) {
+
+
+                        window.location = '@Url.Action("Analytics/2", "Reports" )';
+                    }
+
+                    if (topping == 3) {
+
+
+                      window.location = '@Url.Action("Analytics/3", "Reports" )';
+                    }
+
+                    if (topping == 4) {
+
+
+                       window.location = '@Url.Action("Analytics/4", "Reports" )';
+                    }
+
+
+                  
+                    
+                 
+                   
+
+                }
+            }
+
+            google.visualization.events.addListener(chart, 'select', selectHandler);
+            chart.draw(data, options);
+
+        }
+
+
+
+
+
+
+        // Listen for the 'select' event, and call my function selectHandler() when
+        // the user selects something on the chart.
+
+
+    </script>
+
+
+    <!-- Line Chart -->
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+
+          var MonthsCount = @Html.Raw(Json.Encode(ViewBag.MonthsCount));
+
+
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Month', ''],
+                ['JAN', MonthsCount[0]],
+                ['FEB', MonthsCount[1]],
+                ['MAR', MonthsCount[2]],
+                ['APR', MonthsCount[3]],
+                ['MAY', MonthsCount[4]],
+                ['JUNE', MonthsCount[5]],
+                ['JUL', MonthsCount[6]],
+                ['AUG', MonthsCount[7]],
+                ['SEPT', MonthsCount[8]],
+                ['OCT', MonthsCount[9]],
+                ['NOV', MonthsCount[10]],
+                ['DEC', MonthsCount[11]]
+
+            ]);
+
+            var options = {
+                title: 'Crime Count Per Month',
+                hAxis: { title: 'Year', titleTextStyle: { color: '#333' } },
+                vAxis: { minValue: 0 },
+                legend: 'none',
+                backgroundColor: { fill: 'transparent' }
+            };
+
+            var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+
+
+
+    </script>
+
+
+    <!--Data Tables-->
+    <script src="/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tblUsers').DataTable({
+                "iDisplayLength": 5,
+                "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]]
+            });
+        });
+    </script>
+
+
+}
+
+
+

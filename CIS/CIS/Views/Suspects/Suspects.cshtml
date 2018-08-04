@@ -4,17 +4,56 @@
     ViewBag.Title = "Suspects";
 }
 
-<h2>Suspects</h2>
+<h2>Add Suspects</h2>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Suspects", "Suspects",FormMethod.Post,
+    new
+    {
+        @enctype = "multipart/form-data",
+        @name = "image"
+    }
+
+    ))
 {
     @Html.AntiForgeryToken()
 
 <div class="form-horizontal">
-    <h4>SuspectsModel</h4>
+
+    @Html.HiddenFor(model => model.crime_id, new { htmlAttributes = new { @value = "hehe", id = "hidden" } })
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+            <label>
+
+                <h4><input type="checkbox" id="suspectsCheckbox" /> No suspect have been identified.</h4>
+                <small>Checking this box means that no suspect/s has been identified</small>
+
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-2">Upload Image</div>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Image, new
+       {
+           htmlAttributes = new
+           {
+               @class = "form-control",
+               @type = "file",
+               @accept = "image/*",
+               @name = "image"
+
+           }
+       })
+            @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
 
     <div class="form-group">
         @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -85,18 +124,19 @@
     </div>
 
     <div class="form-group">
+        @Html.HiddenFor(model => model.Body_Built, new { id = "getBodyBuilt" })
         @Html.LabelFor(model => model.Body_Built, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="dropdown col-md-10 ">
-            <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="menu2" data-toggle="dropdown">
                 Tutorials
                 <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="">
+            <ul class="dropdown-menu" role="menu" aria-labelledby="menue" id="BodyBuiltDropdown">
                 <li role="presentation" class="dropdown-header"> Dropdown header 1</li>
                 <li class="row">
-                <li id="1" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/ecto.jpg" /> </a></li>
-                <li id="2" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/meso.jpg" /> </a></li>
-                <li id="3" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/endo.jpg" /> </a></li>
+                <li id="Ectomorph" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/ecto.jpg" /> </a></li>
+                <li id="Mesomorph" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/meso.jpg" /> </a></li>
+                <li id="Endomorph" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/endo.jpg" /> </a></li>
                 </li>
             </ul>
         </div>
@@ -118,10 +158,14 @@
         </div>
     </div>
 
+ 
     <div class="form-group">
         @Html.LabelFor(model => model.Type_of_Weapon, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.Type_of_Weapon, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DropDownListFor(model => model.Type_of_Weapon,
+                new SelectList(Model.WeaponTypes, "WeaponId", "WeaponName"),
+                "Select one...",
+                new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Type_of_Weapon, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -152,7 +196,13 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script type="text/javascript">
 
-      
+
+        $("#suspectsCheckbox").change(function () {
+            if ($("#suspectsCheckbox").is(':checked')) {
+                //disable all other buttons
+            }
+        });
+
 
     </script>
 
