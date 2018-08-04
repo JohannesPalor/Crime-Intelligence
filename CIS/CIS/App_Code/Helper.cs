@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
+using System.Net.Mail;
 
 namespace CIS.App_Code
 {
@@ -27,6 +28,30 @@ namespace CIS.App_Code
             Byte[] EncryptedBytes = HashTool.ComputeHash(PhraseAsByte);
             HashTool.Clear();
             return Convert.ToBase64String(EncryptedBytes);
+        }
+
+
+        public static void SendEmail(string email, string subject, string message)
+        {
+            MailMessage emailMessage = new MailMessage();
+            emailMessage.From = new MailAddress("benilde.web.development@gmail.com", "The Godfather");
+            emailMessage.To.Add(new MailAddress(email));
+            emailMessage.Subject = subject;
+            emailMessage.Body = message;
+            emailMessage.IsBodyHtml = true;
+            emailMessage.Priority = MailPriority.Normal;
+            SmtpClient MailClient = new SmtpClient("smtp.gmail.com", 587);
+            MailClient.EnableSsl = true;
+            MailClient.Credentials = new System.Net.NetworkCredential("benilde.web.development@gmail.com", "!thisisalongpassword1234567890");
+            MailClient.Send(emailMessage);
+        }
+
+        public static void ValidateLogin()
+        {
+            if (HttpContext.Current.Session["userid"] == null)
+            {
+                HttpContext.Current.Response.Redirect("~/Account/Login");
+            }
         }
     }
 }
