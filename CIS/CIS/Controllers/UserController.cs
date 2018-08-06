@@ -64,7 +64,7 @@ namespace CIS.Controllers
                     cmd.Parameters.AddWithValue("@Phone", record.Phone);
                     cmd.Parameters.AddWithValue("@UserType", record.UserType);
                     cmd.ExecuteNonQuery();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index","Home");
                 }
             }
         }

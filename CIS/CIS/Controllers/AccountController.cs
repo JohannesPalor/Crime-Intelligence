@@ -102,17 +102,18 @@ namespace CIS.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login(UserModel record)
+        public ActionResult Login(ReportsModel record)
         {
+ 
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @"SELECT UserId, UserType FROM Users
+                string query = @"SELECT UserId, UserType, username FROM Users
                     WHERE Email=@Email AND Password=@Password";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@Email", record.Email);
-                    cmd.Parameters.AddWithValue("@Password", Helper.Hash(record.Password));
+                    cmd.Parameters.AddWithValue("@Email", record.Login.Email);
+                    cmd.Parameters.AddWithValue("@Password", Helper.Hash(record.Login.Password));
 
                     using (SqlDataReader data = cmd.ExecuteReader())
                     {
@@ -122,6 +123,8 @@ namespace CIS.Controllers
                             {
                                 Session["userid"] = data["UserID"].ToString();
                                 Session["typeid"] = data["UserType"].ToString();
+
+                                Session["username"] = data["username"].ToString();
                             }
                             return RedirectToAction("Index","Home");
                         }
@@ -138,6 +141,12 @@ namespace CIS.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        public ActionResult ClearSession()
+        {
+            Session.Clear();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

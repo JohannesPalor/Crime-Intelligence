@@ -330,6 +330,17 @@
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="Images\CrimeImages\NoImage.png" />
+    <Content Include="Images\FaceShape\Diamond.png" />
+    <Content Include="Images\FaceShape\Heart.png" />
+    <Content Include="Images\FaceShape\Inverted Triangle.png" />
+    <Content Include="Images\FaceShape\noFace.jpg" />
+    <Content Include="Images\FaceShape\Oblong.png" />
+    <Content Include="Images\FaceShape\Oval.png" />
+    <Content Include="Images\FaceShape\Rectangle.png" />
+    <Content Include="Images\FaceShape\Round.png" />
+    <Content Include="Images\FaceShape\Square.png" />
+    <Content Include="Images\FaceShape\Triangle.png" />
     <Content Include="Images\MapPointers\map.png" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -468,7 +479,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\CrimeImages\" />
     <Folder Include="Images\SuspectImages\" />
   </ItemGroup>
   <ItemGroup>

@@ -13,18 +13,66 @@
     @foreach (var item in Model.ReportsList)
     {
         <div class="col-lg-4">
-            <img src="~/Images/CrimeImages/@item.Image" width="600" class="img-thumbnail mx-auto  img-responsive"/>
+            @if (item.Image == "")
+            {
+                <img src="~/Images/CrimeImages/NoImage.png" width="440" class="img-thumbnail    img-responsive" />
+            }
+            else
+            {
+                <img src="~/Images/CrimeImages/@item.Image" width="440" class="img-thumbnail  img-responsive" />
+            }
         </div>
         <div class="col-lg-8">
             <h3>Crime ID: @item.CrimeId</h3>
             <h3>Crime Type: @item.CrimeName</h3>
             <h3>Details: @item.incident_details</h3>
+            <h3 id="location"></h3>
+
+
+            <script>
+
+
+            function initMap() {
+                var geocoder = new google.maps.Geocoder;
+
+                var input = '@item.latitude,@item.longitude'
+                var latlngStr = input.split(',', 2);
+                var latlng = { lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1]) };
+                geocoder.geocode({ 'location': latlng }, function (results, status) {
+
+                    if (status === 'OK') {
+                        if (results[0]) {
+                            $('#location').text("Location: " + results[0].formatted_address);
+                            } else {
+
+                        }
+                    } else {
+
+                    }
+                });
+
+            }
+
+
+
+
+            </script>
+
+            <h3>Witnesses: @item.votes</h3>
+
+            <button id="default" class="btn btn-default" disabled>Witnessed Incident</button>
+            <a id="add" href="@Url.Action("AddVote", "Reports", new { id = item.CrimeId, userid=Session["userid"].ToString()})" class="btn btn-danger">
+                I've witnessed this incident
+            </a>
+            <a href="@Url.Action("Suspects", "Suspects", new { id=item.CrimeId})" class="btn btn-success">
+                Add Suspect
+            </a>
         </div>
     }
 </div>
 
 <br />
-<hr/>
+<hr />
 
 <h2>Suspect List</h2>
 
@@ -35,6 +83,9 @@
     <table class="table" id="table">
         <thead>
             <tr>
+                <th>
+
+                </th>
                 <th>
                     Suspect Name
                 </th>
@@ -57,22 +108,46 @@
                 <th>
                     Description
                 </th>
-                <th>
-                    Action
-                </th>
+                @foreach (var item in Model.ReportsList)
+                {
+
+
+
+                    if (Session["userid"].ToString() == item.user_id.ToString())
+                    {
+
+
+                        <th>
+                            Action
+                        </th>
+                    }
+                }
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.SuspectsList)
             {
                 <tr>
-
                     <td>
+
+                        @if (item.Image == "")
+                        {
+
+                            <img src="~/Images/CrimeImages/NoImage.png" width="250" class="img-thumbnail    img-responsive" />
+                        }
+                        else
+                        {
+                            <img src="~/Images/SuspectImages/@item.Image" width="250" class="img-thumbnail  img-responsive" />
+                        }
+                    </td>
+                    <td>
+
                         @Html.DisplayFor(modelItem => item.Name)
 
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Face_Shape)
+
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Body_Built)
@@ -91,11 +166,19 @@
                         @Html.DisplayFor(modelItem => item.Other_Description)
                     </td>
 
+                    @foreach (var item2 in Model.ReportsList)
+                    {
 
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.suspect_id }) | 
-                        @Html.ActionLink("Delete", "Delete", new { id = item.suspect_id }) 
-                    </td>
+                        if (Session["userid"].ToString() == item2.user_id.ToString())
+                        {
+
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.suspect_id }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.suspect_id })
+                            </td>
+                        }
+                    }
+
                 </tr>
             }
         </tbody>
@@ -112,7 +195,26 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script src="/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDteHXAYBzPcLs29iJas_K0pa0Jf4wuBrY&callback=initMap" async defer></script>
+
+
     <script>
+
+        var hasReported =@Html.Raw(Json.Encode(ViewBag.HasReported));
+             
+
+                if (JSON.stringify(hasReported) > 0) {
+                
+                    $('#add').hide();
+
+                    $('#default').show();
+                } else {
+
+
+                    $('#add').show();
+
+                    $('#default').hide();
+                }
         $(document).ready(function () {
             $('#table').DataTable({
                 "iDisplayLength": 5,

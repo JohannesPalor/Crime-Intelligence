@@ -7,7 +7,7 @@
 <h2>Add Suspects</h2>
 
 
-@using (Html.BeginForm("Suspects", "Suspects",FormMethod.Post,
+@using (Html.BeginForm("Suspects", "Suspects", FormMethod.Post,
     new
     {
         @enctype = "multipart/form-data",
@@ -18,172 +18,174 @@
 {
     @Html.AntiForgeryToken()
 
-<div class="form-horizontal">
+    <div class="form-horizontal">
 
-    @Html.HiddenFor(model => model.crime_id, new { htmlAttributes = new { @value = "hehe", id = "hidden" } })
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.crime_id, new { htmlAttributes = new { @value = "hehe", id = "hidden" } })
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-    <div class="form-group">
-        <div class="col-md-2"></div>
-        <div class="col-md-10">
-            <label>
+        <div class="form-group">
+            <div class="col-md-2"></div>
+            <div class="col-md-10">
+                <label>
 
-                <h4><input type="checkbox" id="suspectsCheckbox" /> No suspect have been identified.</h4>
-                <small>Checking this box means that no suspect/s has been identified</small>
+                    <h4><input type="checkbox" id="suspectsCheckbox" /> No suspect have been identified.</h4>
+                    <small>Checking this box means that no suspect/s has been identified</small>
 
-            </label>
+                </label>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <div class="col-md-2">Upload Image</div>
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Image, new
-       {
-           htmlAttributes = new
+        <div class="form-group">
+            <div class=" control-label col-md-2"><b>Upload Image</b></div>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Image, new
            {
-               @class = "form-control",
-               @type = "file",
-               @accept = "image/*",
-               @name = "image"
+               htmlAttributes = new
+               {
+                   @class = "form-control",
+                   @type = "file",
+                   @accept = "image/*",
+                   @name = "image",
+                   @id = "image"
 
-           }
-       })
-            @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+                    }
+
+           })
+                @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", id = "name" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group">
+            @Html.HiddenFor(model => model.Face_Shape, new { id = "getFaceID" })
+            <div class=" control-label col-md-2"><b>Face Shape</b></div>
+
+            <div class="dropdown col-md-10" >
+                <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown" >
+                    Tutorials
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="faceDropdown">
+                    <li role="presentation" class="dropdown-header"> Dropdown header 1</li>
+                    <li class="row">
+                    <li id="Triangle" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1"><img src="~/Images/Triangle.png" /> </a></li>
+                    <li id="Inverted Triangle" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1"><img src="~/Images/InvertedTriangle.png" /> </a></li>
+                    <li id="Heart" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1"><img src="~/Images/Heart.png" /> </a></li>
+                    </li>
+                    <li class="row">
+                    <li id="Square" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Square.png" /> </a></li>
+                    <li id="Rectangle" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Rectangle.png" /> </a></li>
+                    <li id="Diamond" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Diamond.png" /> </a></li>
+                    </li>
+                    <li class="row">
+                    <li id="Oblong" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Oblong.png" /> </a></li>
+                    <li id="Round" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Round.png" /> </a></li>
+                    <li id="Oval" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Oval.png" /> </a></li>
+                    </li>
+
+
+
+                    <li id="10" class="col-lg-12 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/noFace.jpg" height="150" width="150" /> </a></li>
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Hair_Style, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Hair_Style,
+                    new SelectList(Model.HairTypes, "HairTypeId", "Name"),
+                    "Select one...",
+                    new { @class = "form-control", id= "hair"})
+                @Html.ValidationMessageFor(model => model.Hair_Style, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Prominent_Facial_Feature, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Prominent_Facial_Feature, new { htmlAttributes = new { @class = "form-control", id = "prominent" } })
+                @Html.ValidationMessageFor(model => model.Prominent_Facial_Feature, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.HiddenFor(model => model.Body_Built, new { id = "getBodyBuilt" })
+            @Html.LabelFor(model => model.Body_Built, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="dropdown col-md-10 ">
+                <button class="btn btn-default dropdown-toggle" type="button" id="menu2" data-toggle="dropdown">
+                    Tutorials
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="menue" id="BodyBuiltDropdown">
+                    <li role="presentation" class="dropdown-header"> Dropdown header 1</li>
+                    <li class="row">
+                    <li id="Ectomorph" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/ecto.jpg" /> </a></li>
+                    <li id="Mesomorph" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/meso.jpg" /> </a></li>
+                    <li id="Endomorph" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/endo.jpg" /> </a></li>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Shirt_Color, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Shirt_Color, new { htmlAttributes = new { @class = "form-control", Type = "color", id = "color" } })
+                @Html.ValidationMessageFor(model => model.Shirt_Color, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tattoo_Location, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Tattoo_Location, new { htmlAttributes = new { @class = "form-control", id = "tattoo" } })
+                @Html.ValidationMessageFor(model => model.Tattoo_Location, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Type_of_Weapon, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Type_of_Weapon,
+                    new SelectList(Model.WeaponTypes, "WeaponId", "WeaponName"),
+                    "Select one...",
+                    new { @class = "form-control", id = "weapon" })
+                @Html.ValidationMessageFor(model => model.Type_of_Weapon, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Other_Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Other_Description, new { htmlAttributes = new { @class = "form-control", id = "other" } })
+                @Html.ValidationMessageFor(model => model.Other_Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
         </div>
     </div>
-
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-
-
-
-    <div class="form-group">
-        @Html.HiddenFor(model => model.Face_Shape, new { id = "getFaceID" })
-        @Html.LabelFor(model => model.Face_Shape, htmlAttributes: new { @class = "control-label col-md-2" })
-
-        <div class="dropdown col-md-10">
-            <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
-                Tutorials
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="faceDropdown">
-                <li role="presentation" class="dropdown-header"> Dropdown header 1</li>
-                <li class="row">
-                <li id="Triangle" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1"><img src="~/Images/Triangle.png" /> </a></li>
-                <li id="Inverted Triangle" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1"><img src="~/Images/InvertedTriangle.png" /> </a></li>
-                <li id="Heart" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1"><img src="~/Images/Heart.png" /> </a></li>
-                </li>
-                <li class="row">
-                <li id="Square" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Square.png" /> </a></li>
-                <li id="Rectangle" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Rectangle.png" /> </a></li>
-                <li id="Diamond" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Diamond.png" /> </a></li>
-                </li>
-                <li class="row">
-                <li id="Oblong" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Oblong.png" /> </a></li>
-                <li id="Round" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Round.png" /> </a></li>
-                <li id="Oval" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/Oval.png" /> </a></li>
-                </li>
-
-
-
-                <li id="10" class="col-lg-12 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/noFace.jpg" height="150" width="150" /> </a></li>
-
-            </ul>
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Hair_Style, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DropDownListFor(model => model.Hair_Style,
-                new SelectList(Model.HairTypes, "HairTypeId", "Name"),
-                "Select one...",
-                new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Hair_Style, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-
-
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Prominent_Facial_Feature, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Prominent_Facial_Feature, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Prominent_Facial_Feature, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.HiddenFor(model => model.Body_Built, new { id = "getBodyBuilt" })
-        @Html.LabelFor(model => model.Body_Built, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="dropdown col-md-10 ">
-            <button class="btn btn-default dropdown-toggle" type="button" id="menu2" data-toggle="dropdown">
-                Tutorials
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="menue" id="BodyBuiltDropdown">
-                <li role="presentation" class="dropdown-header"> Dropdown header 1</li>
-                <li class="row">
-                <li id="Ectomorph" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/ecto.jpg" /> </a></li>
-                <li id="Mesomorph" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/meso.jpg" /> </a></li>
-                <li id="Endomorph" class="col-lg-4 role="presentation"><a role="menuitem" tabindex="-1" href="#"><img src="~/Images/BodyBuilt/endo.jpg" /> </a></li>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Shirt_Color, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Shirt_Color, new { htmlAttributes = new { @class = "form-control", Type = "color" } })
-            @Html.ValidationMessageFor(model => model.Shirt_Color, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Tattoo_Location, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Tattoo_Location, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Tattoo_Location, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
- 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Type_of_Weapon, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DropDownListFor(model => model.Type_of_Weapon,
-                new SelectList(Model.WeaponTypes, "WeaponId", "WeaponName"),
-                "Select one...",
-                new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Type_of_Weapon, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Other_Description, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Other_Description, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Other_Description, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-default" />
-        </div>
-    </div>
-</div>
 }
 
 <div>
@@ -200,6 +202,31 @@
         $("#suspectsCheckbox").change(function () {
             if ($("#suspectsCheckbox").is(':checked')) {
                 //disable all other buttons
+
+                $("#image").prop("disabled", true);
+                $("#name").prop("disabled", true);
+                $("#menu1").prop("disabled", true);
+                $("#hair").prop("disabled", true);
+                $("#prominent").prop("disabled", true);
+                $("#menu2").prop("disabled", true);
+                $("#color").prop("disabled", true);
+                $("#tattoo").prop("disabled", true);
+                $("#weapon").prop("disabled", true);
+                $("#other").prop("disabled", true);
+            }
+            if ($("#suspectsCheckbox").is(':unchecked')) {
+                //disable all other buttons
+
+                $("#image").prop("disabled", false);
+                $("#name").prop("disabled", false);
+                $("#menu1").prop("disabled", false);
+                $("#hair").prop("disabled", false);
+                $("#prominent").prop("disabled", false);
+                $("#menu2").prop("disabled", false);
+                $("#color").prop("disabled", false);
+                $("#tattoo").prop("disabled", false);
+                $("#weapon").prop("disabled", false);
+                $("#other").prop("disabled", false);
             }
         });
 

@@ -17,7 +17,7 @@ namespace CIS.Controllers
         public ActionResult Index()
         {
             ViewBag.LatLongArray = getCrimeReports();
-
+            
             var record = new ReportsModel();
             record.CrimeTypes = getCrimeTypes();
             return View(record);
@@ -29,8 +29,8 @@ namespace CIS.Controllers
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @"INSERT INTO crime_reports(Time,longitude, latitude, incident_details,users,Image,crimetype) 
-                                VALUES (@Date,  @longitude, @latitude, @incident_details,@users,@Image, @CrimeType)";
+                string query = @"INSERT INTO crime_reports(Time,longitude, latitude, incident_details,users,Image,crimetype,Votes) 
+                                VALUES (@Date,  @longitude, @latitude, @incident_details,@users,@Image, @CrimeType,@Votes)";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@Date", record.time);
@@ -49,6 +49,8 @@ namespace CIS.Controllers
 
 
                     cmd.Parameters.AddWithValue("@CrimeType", record.CrimeTypeId);
+
+                    cmd.Parameters.AddWithValue("@Votes", 1);
 
                     cmd.Parameters.AddWithValue("@users", int.Parse(Session["userid"].ToString()));
                     cmd.ExecuteNonQuery();
@@ -148,7 +150,7 @@ namespace CIS.Controllers
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @"SELECT Crime_ID,longitude, latitude, incident_details,ct.TypeId, ct.CrimeName FROM Crime_Reports
+                string query = @"SELECT Crime_ID,longitude, latitude, incident_details,ct.TypeId, ct.CrimeName, votes FROM Crime_Reports
                                 INNER JOIN CrimeTypes ct on ct.TypeId = CrimeType";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
@@ -164,6 +166,7 @@ namespace CIS.Controllers
                                 incident_details = sdr["incident_details"].ToString(),
                                 CrimeTypeId = int.Parse(sdr["TypeId"].ToString()),
                                 CrimeName = sdr["CrimeName"].ToString(),
+                                votes = int.Parse(sdr["votes"].ToString()),
                                 SuspectCount = suspectCount(int.Parse(sdr["Crime_ID"].ToString()))
 
                             });
@@ -321,6 +324,23 @@ namespace CIS.Controllers
             {
                 con.Open();
                 string query = @"SELECT Count(*) from Suspects where Crime_Id = @id";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    return int.Parse(cmd.ExecuteScalar().ToString());
+
+
+                }
+            }
+        }
+        public int VotesCount(int id)
+        {
+
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"SELECT Count(votes) from Crime_Reports where Crime_Id = @id";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@id", id);

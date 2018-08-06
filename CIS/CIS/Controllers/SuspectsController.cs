@@ -87,6 +87,7 @@ namespace CIS.Controllers
         public ActionResult Suspects(SuspectsModel record, HttpPostedFileBase image)
         {
            
+           
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
@@ -98,11 +99,11 @@ namespace CIS.Controllers
                 using (SqlCommand com = new SqlCommand(query, con))
                 {
                     com.Parameters.AddWithValue("@Crime_id", record.crime_id);
-                    com.Parameters.AddWithValue("@Name", record.Name);
-                    com.Parameters.AddWithValue("@Face_Shape", record.Face_Shape);
-                    com.Parameters.AddWithValue("@Hair_Style", record.Hair_Style);
-                    com.Parameters.AddWithValue("@Prominent_Facial_Feature", record.Prominent_Facial_Feature);
-                    com.Parameters.AddWithValue("@Body_Built", record.Body_Built);
+                    com.Parameters.AddWithValue("@Name", record.Name == null ? DBNull.Value.ToString() : record.Name);
+                    com.Parameters.AddWithValue("@Face_Shape", record.Face_Shape == null ? DBNull.Value.ToString(): record.Face_Shape);
+                    com.Parameters.AddWithValue("@Hair_Style", record.Hair_Style == null ? DBNull.Value.ToString() : record.Hair_Style);
+                    com.Parameters.AddWithValue("@Prominent_Facial_Feature", record.Prominent_Facial_Feature == null ? DBNull.Value.ToString() : record.Prominent_Facial_Feature);
+                    com.Parameters.AddWithValue("@Body_Built", record.Body_Built == null ? DBNull.Value.ToString() : record.Body_Built);
                     com.Parameters.AddWithValue("@Image", image == null ? "None" :
                        DateTime.Now.ToString("yyyyMMddHHmmss-") + image.FileName);
                     if (image != null)
@@ -110,11 +111,11 @@ namespace CIS.Controllers
                         image.SaveAs(Server.MapPath("~/Images/SuspectImages/" +
                     DateTime.Now.ToString("yyyyMMddHHmmss-") + image.FileName));
                     }
-                    com.Parameters.AddWithValue("@Shirt_Color", record.Shirt_Color );
-                    com.Parameters.AddWithValue("@Tattoo_Location", record.Tattoo_Location);
+                    com.Parameters.AddWithValue("@Shirt_Color", record.Shirt_Color == null ? DBNull.Value.ToString() : record.Shirt_Color);
+                    com.Parameters.AddWithValue("@Tattoo_Location", record.Tattoo_Location == null ? DBNull.Value.ToString() : record.Tattoo_Location);
                     com.Parameters.AddWithValue("@Is_Armed", 0);
-                    com.Parameters.AddWithValue("@Type_of_Weapon", record.Type_of_Weapon);
-                    com.Parameters.AddWithValue("@Other_Description", record.Other_Description);
+                    com.Parameters.AddWithValue("@Type_of_Weapon", record.Type_of_Weapon == null ? 0 : record.Type_of_Weapon);
+                    com.Parameters.AddWithValue("@Other_Description", record.Other_Description == null ? DBNull.Value.ToString() : record.Other_Description);
 
 
                     com.ExecuteNonQuery();

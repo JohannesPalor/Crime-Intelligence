@@ -9,10 +9,7 @@
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
 </head>
 
-@{
-    Session["userid"] = 1;
 
-}
 
 <style>
     /* Always set the map height explicitly to define the size of the div
@@ -42,122 +39,225 @@
 
 <div class="list-group" id="mapOptions">
     <a href="#" class="list-group-item" data-toggle="modal" data-target="#modalReport">Report Crime Incident</a>
-    <a href="#" class="list-group-item">Show Area Crime Report</a>
+    
     <a href="#" class="list-group-item list-group-item-danger" onclick="hide();">Cancel</a>
 </div>
 
 
 
-<div class="modal fade" id="modalReport" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Report a Crime</h2>
-            </div>
+@if (Session["userid"] == null)
+{
+    <div class="modal fade" id="modalReport" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 
 
 
-            <div class="row">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Login</h2>
+                    <br />
+                    <h5 class="modal-title">You must login first to create a report</h5>
+                </div>
 
-                </br>
-                <div class="col-lg-1"></div>
-                <div class="col-lg-5">
-                    @using (Html.BeginForm("Index", "Home", FormMethod.Post,
-                        new
-                        {
-                            @enctype = "multipart/form-data",
-                            @name = "image"
-                        }))
+
+
+                <div class="row">
+
+                    <br />
+                    <div class="col-lg-2"></div>
+
+
+                    @using (Html.BeginForm("Login", "Account"))
                     {
                         @Html.AntiForgeryToken()
 
-                        <div class="form-horizontal">
+                        <div class="col-lg-10 form-horizontal">
 
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.CrimeTypeId, htmlAttributes: new { @class = "control-label col-md-4" })
-                                <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.CrimeTypeId,
-                                        new SelectList(Model.CrimeTypes, "TypeId", "CrimeName"),
-                                        "Select Type of Crime...",
-                                        new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(model => model.CrimeTypeId, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
+                            @Html.Raw(ViewBag.Message)
+                            <div class="row"></div>
 
                             <div class="form-group">
-                                @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                                @Html.LabelFor(model => model.Login.Email, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.Image, new
-                           {
-                               htmlAttributes = new
-                               {
-                                   @class = "form-control",
-                                   @type = "file",
-                                   @accept = "image/*",
-                                   @name = "image"
-                               }
-                           })
-                                    @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.Login.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Login.Email, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Login.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.Login.Password, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Login.Password, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
 
-
-
-
-
-
                             <div class="form-group">
-                                @Html.LabelFor(model => model.time, htmlAttributes: new { @class = "control-label col-md-4" })
-                                <div class="col-md-8">
-                                    @Html.EditorFor(model => model.time, new { htmlAttributes = new { @class = "form-control form_datetime" } })
-                                    @Html.ValidationMessageFor(model => model.time, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
+                                <div class="col-md-offset-2 col-md-6">
 
 
-                            @Html.HiddenFor(model => model.longitude, new { id = "longitude" })
-
-                            @Html.HiddenFor(model => model.latitude, new { id = "latitude" })
-
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.incident_details, htmlAttributes: new { @class = "control-label col-md-4" })
-                                <div class="col-md-8">
-                                    @Html.EditorFor(model => model.incident_details, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.incident_details, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-
-
-
-
-                            <div class="form-group">
-                                <div class="col-md-offset-2 col-md-10">
-
-
-                                    <button type="submit" name="Submit" class="btn btn-success btn-lg btn-block">
-
-                                        Submit Crime Report
+                                    <button type="submit" name="Submit" class="btn btn-success btn-lg col-xs-12 center-block">
+                                        Login
                                     </button>
+
+                                    <br />
+                                    <br />
+                                    <p class="text-center">OR</p>
+
+                                    <a href="@Url.Action("Create","User")" class="btn btn-default btn-lg col-xs-12 center-block">
+                                        Create an Account
+                                    </a>
+
                                 </div>
                             </div>
                         </div>
-
-
                     }
+
                 </div>
 
 
             </div>
-
-
         </div>
     </div>
-</div>
+
+}
+else
+{
+
+    <div class="modal fade" id="modalReport" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+
+
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Report a Crime</h2>
+                </div>
+
+
+
+                <div class="row">
+
+                    <br />
+                    <div class="col-lg-1"></div>
+                    <div class="col-lg-5">
+                        @using (Html.BeginForm("Index", "Home", FormMethod.Post,
+                            new
+                            {
+                                @enctype = "multipart/form-data",
+                                @name = "image"
+                            }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-horizontal">
+
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.CrimeTypeId, htmlAttributes: new { @class = "control-label col-md-4" })
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.CrimeTypeId,
+                                            new SelectList(Model.CrimeTypes, "TypeId", "CrimeName"),
+                                            "Select Type of Crime...",
+                                            new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.CrimeTypeId, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label col-md-4" })
+                                    <div class="col-md-8">
+                                        @Html.EditorFor(model => model.Image, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control",
+                                       @type = "file",
+                                       @accept = "image/*",
+                                       @name = "image"
+                                   }
+                               })
+                                        @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.time, htmlAttributes: new { @class = "control-label col-md-4" })
+                                    <div class="col-md-8">
+                                        @Html.EditorFor(model => model.time, new { htmlAttributes = new { @class = "form-control form_datetime" } })
+                                        @Html.ValidationMessageFor(model => model.time, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
+                                @Html.HiddenFor(model => model.longitude, new { id = "longitude" })
+
+                                @Html.HiddenFor(model => model.latitude, new { id = "latitude" })
+
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.incident_details, htmlAttributes: new { @class = "control-label col-md-4" })
+                                    <div class="col-md-8">
+                                        @Html.EditorFor(model => model.incident_details, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.incident_details, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+
+
+                                        <button type="submit" name="Submit" class="btn btn-success btn-lg btn-block">
+
+                                            Submit Crime Report
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        }
+                    </div>
+                    <div class="col-lg-6">
+                        <h3>Reporting Guidelines</h3>
+
+                        <h5>1) Report only crimes that have actually transpired.</h5>
+
+                        <h5>2) Philippine National Police (PNP) has the right to verify the report once submitted.</h5>
+
+                        <h5>3) PNP may call the number of the reporter to verify details.</h5>
+
+                        <h5>4) To protect veracity of reports, fake reporters may be charged of violating CIS terms and policies.</h5>
+
+                        <h5>5) In case of emergency, call 887-8888 (PNP).</h5>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+}
+
+
+
 
 
 
@@ -334,15 +434,16 @@
                 else if (viewBag[ctr].CrimeTypeId == 7) {
                     logo = '\uf0fc';
                 }
-
-
-                var contentString = '<div class="panel ">' +
-              
-                    '<div class="panel  panel-title"><h3>Details</h3></div></hr>' +
+                var contentString = '<div class=" ">' +
+                    '<div class="panel panel-title"'+
+                    '<div class=""><h3>Details</h3></div>' +
+                    '&nbsp<div class=""><h6>' + viewBag[ctr].votes + ' <i class="fa fa-eye"></i></h6></div></hr>' +
+                    '</div>'+
                     '<div class="panel-body">' +
                     '<p><b>Crime Type:</b> ' + viewBag[ctr].CrimeName + '</p>' +
                     '<p><b>Details:</b> ' + viewBag[ctr].incident_details + '</p>' +
                     '<p><b>Suspects:</b> ' + viewBag[ctr].SuspectCount + '</p>' +
+                   
                     '<a class="btn btn-success col-lg-12" href="@Url.Action("Details", "Reports")' + "/" + viewBag[ctr].CrimeId+'" >View Incident Details</a>'+
                     '</div>' +
                     '</div>';
@@ -365,7 +466,6 @@
                         infowindow.open(map, marker);
                     };
                 })(marker, contentString, infowindow));
-
 
 
             }
@@ -439,4 +539,4 @@
 
 
 
-}
+    }

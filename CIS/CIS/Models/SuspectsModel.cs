@@ -11,6 +11,7 @@ namespace CIS.Models
 
         [Key]        
         public int suspect_id { get; set; }
+        [MaxLength(200)]
         public string Image { get; set; }
         public int crime_id { get; set; }
 
@@ -49,7 +50,6 @@ namespace CIS.Models
         [MaxLength(50)]
         public string is_Armed { get; set; }
 
-        [MaxLength(50)]
         [Display(Name = "Type of Weapon")]
         public int Type_of_Weapon { get; set; }
 

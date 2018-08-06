@@ -19,6 +19,8 @@ namespace CIS.Controllers
         {
             var record = new ReportsModel();
             record.CrimeTypes = getCrimeTypes();
+            
+
             return View(record);
         }
 
@@ -254,7 +256,7 @@ namespace CIS.Controllers
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @"SELECT Crime_ID,longitude,Image, latitude, incident_details, ct.CrimeName FROM Crime_Reports
+                string query = @"SELECT Crime_ID,longitude,Image, latitude, incident_details, ct.CrimeName, votes, users FROM Crime_Reports
                                 INNER JOIN CrimeTypes ct on ct.TypeId = CrimeType
                                 WHERE Crime_ID = @CrimeID";
                 using (SqlCommand cmd = new SqlCommand(query, con))
@@ -271,7 +273,9 @@ namespace CIS.Controllers
                                 latitude = sdr["latitude"].ToString(),
                                 incident_details = sdr["incident_details"].ToString(),
                                 CrimeName = sdr["CrimeName"].ToString(),
-                                Image = sdr["Image"].ToString()
+                                votes = int.Parse(sdr["votes"].ToString()),
+                                Image = sdr["Image"].ToString(),
+                                user_id = 7
 
                             });
                         }
@@ -292,8 +296,8 @@ namespace CIS.Controllers
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @"SELECT Suspect_ID, Crime_Id, s.[Name], Face_Shape, ht.Name as Hair_Style, Prominent_Facial_Feature, Body_built,
-                                Shirt_color, Tattoo_Location, w.WeaponName as Type_of_weapon, Other_Description FROM Suspects s
+                string query = @"SELECT Suspect_ID, Crime_Id, s.[Name], s.[Image], Face_Shape, ht.Name as Hair_Style, Prominent_Facial_Feature, Body_built,
+                                Shirt_color, Tattoo_Location, w.WeaponName  as Type_of_weapon, Other_Description FROM Suspects s
                                 INNER JOIN HairType ht on ht.TypeId = s.Hair_Style
                                 INNER JOIN Weapons w on w.WeaponId = s.Type_of_weapon
                                 WHERE Crime_Id= @CrimeID";
@@ -317,7 +321,9 @@ namespace CIS.Controllers
                                 Shirt_Color = sdr["Shirt_color"].ToString(),
                                 Tattoo_Location = sdr["Tattoo_Location"].ToString(),
                                 Other_Description = sdr["Other_Description"].ToString(),
-                                Weapon = sdr["Type_of_weapon"].ToString()
+                                Weapon = sdr["Type_of_weapon"].ToString(),
+                                Image = sdr["Image"].ToString()
+
 
                             });
                         }
@@ -378,8 +384,10 @@ namespace CIS.Controllers
         {
 
             var record = new ReportsModel();
-            record.ReportsList = getCrimeReportsByID(id);
             record.SuspectsList = getSuspectsByID(id);
+            ViewBag.HasReported = VerifyVote(id, int.Parse(Session["userid"].ToString()));
+
+            record.ReportsList = getCrimeReportsByID(id);
             return View(record);
         }
 
@@ -472,7 +480,57 @@ namespace CIS.Controllers
 
         }
 
-        
+        public ActionResult AddVote(int id, int userid)
+        {
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"UPDATE crime_reports SET Votes= Votes+1
+                                 WHERE CRIME_ID = @CrimeID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@CrimeID", id);
+                    
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"INSERT INTO USERHASVOTE VALUES(@userid, @crimeid)";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@userid", userid);
+                    cmd.Parameters.AddWithValue("@crimeid", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            return RedirectToAction("Details", "Reports", new { id =id});
+
+        }
+
+
+        public int VerifyVote(int id, int userid)
+        {
+          
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"SELECT count(*) From UserHasVote WHERE userid=@userid and crimeid=@crimeid;";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@userid", userid);
+                    cmd.Parameters.AddWithValue("@crimeid", id);
+
+                    return int.Parse(cmd.ExecuteScalar().ToString());
+                }
+            }
+           
+
+        }
+
         public ActionResult Delete(int id)
         {
             int crimeid;

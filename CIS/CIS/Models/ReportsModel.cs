@@ -50,5 +50,7 @@ namespace CIS.Models
 
         public List<ReportsModel> ReportsList { get; set; }
         public List<SuspectsModel> SuspectsList { get; set; }
+
+        public UserModel Login { get; set; }
     }
 }
